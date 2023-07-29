@@ -28,6 +28,9 @@ namespace XansTools.Utilities {
 
 		/// <summary>
 		/// Removes the provided object from its room then deletes it. Does nothing if the object is null, so this is safe to call on null references.
+		/// <para/>
+		/// The primary difference between this method and calling <see cref="UpdatableAndDeletable.Destroy"/> is for immediate removal, a bit like
+		/// Unity's <see cref="UnityEngine.Object.DestroyImmediate"/> (including with how niche its use cases are).
 		/// </summary>
 		/// <param name="obj"></param>
 		public static void RemoveThenDestroy(this UpdatableAndDeletable obj) {
@@ -43,6 +46,7 @@ namespace XansTools.Utilities {
 		/// Make ABSOLUTELY SURE that you can use this before you do!
 		/// </summary>
 		/// <param name="obj"></param>
+		[Obsolete("This method was a prototype and may not work as intended for lack of proper testing and implementation.")]
 		public static void DestructivelyResetFields(this object obj) {
 			Type type = obj.GetType();
 			FieldInfo[] flds = type.GetFields(ALL_FLAGS);

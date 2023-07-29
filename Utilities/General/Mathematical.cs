@@ -35,7 +35,7 @@ namespace XansTools.Utilities {
 		// This rule generally applies to all integer types.
 
 		/// <summary>
-		/// Returns whether or not the provided value is odd without using modulo or division.
+		/// Returns whether or not the provided value is odd without using division (modulo) nor branching; all checks are bitwise..
 		/// </summary>
 		/// <param name="value"></param>
 		/// <returns></returns>
@@ -45,7 +45,7 @@ namespace XansTools.Utilities {
 
 		/// <inheritdoc cref="IsOdd(byte)"/>
 		public static bool IsOdd(this sbyte value) {
-			return unchecked((value & 1) ^ (value >> 7)) == 1;
+			return unchecked((value & 1) ^ (value >> (sizeof(sbyte) * 8 - 1))) == 1;
 		}
 
 		/// <inheritdoc cref="IsOdd(byte)"/>
@@ -55,7 +55,7 @@ namespace XansTools.Utilities {
 
 		/// <inheritdoc cref="IsOdd(byte)"/>
 		public static bool IsOdd(this short value) {
-			return unchecked((value & 1) ^ (value >> 15)) == 1;
+			return unchecked((value & 1) ^ (value >> (sizeof(short) * 8 - 1))) == 1;
 		}
 
 		/// <inheritdoc cref="IsOdd(byte)"/>
@@ -65,7 +65,7 @@ namespace XansTools.Utilities {
 
 		/// <inheritdoc cref="IsOdd(byte)"/>
 		public static bool IsOdd(this int value) {
-			return unchecked((value & 1) ^ (value >> 31)) == 1;
+			return unchecked((value & 1) ^ (value >> (sizeof(int) * 8 - 1))) == 1;
 		}
 
 		/// <inheritdoc cref="IsOdd(byte)"/>
@@ -75,7 +75,7 @@ namespace XansTools.Utilities {
 
 		/// <inheritdoc cref="IsOdd(byte)"/>
 		public static bool IsOdd(this long value) {
-			return unchecked((value & 1) ^ (value >> 63)) == 1;
+			return unchecked((value & 1) ^ (value >> (sizeof(long) * 8 - 1))) == 1;
 		}
 
 		#endregion
@@ -112,6 +112,16 @@ namespace XansTools.Utilities {
 		/// <returns></returns>
 		public static float TicksToSeconds(this int ticks) {
 			return ticks / 40f;
+		}
+
+		/// <summary>
+		/// Converts seconds into the nearest tick. Ticks have a resolution of 0.025 seconds.
+		/// </summary>
+		/// <param name="seconds"></param>
+		/// <returns></returns>
+		public static int SecondsToTicks(this float seconds) {
+			seconds *= 40.0f;
+			return Mathf.RoundToInt(seconds);
 		}
 
 		/// <summary>

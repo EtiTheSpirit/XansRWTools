@@ -40,6 +40,9 @@
     <Reference Include="0Harmony">
       <HintPath>E:\Steam Games\steamapps\common\Rain World\BepInEx\core\0Harmony.dll</HintPath>
     </Reference>
+    <Reference Include="Assembly-CSharp-firstpass">
+      <HintPath>E:\Steam Games\steamapps\common\Rain World\RainWorld_Data\Managed\Assembly-CSharp-firstpass.dll</HintPath>
+    </Reference>
     <Reference Include="BepInEx">
       <HintPath>E:\Steam Games\steamapps\common\Rain World\BepInEx\core\BepInEx.dll</HintPath>
     </Reference>
@@ -279,14 +282,26 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AssetSystems\AssetLoader.cs" />
     <Compile Include="Exceptions\RuntimePatchFailureException.cs" />
-    <Compile Include="Plugin.cs" />
+    <Compile Include="Maths\Float2.cs" />
+    <Compile Include="PrimaryToolkit\Iterator\CustomIterator.cs" />
+    <Compile Include="PrimaryToolkit\Iterator\CustomIteratorGraphics.cs" />
+    <Compile Include="PrimaryToolkit\Iterator\Internal\CustomIterator.ShadowHooks.cs" />
+    <Compile Include="PrimaryToolkit\Iterator\Internal\CustomIteratorGraphics.ShadowHooks.cs" />
+    <Compile Include="RemixCfg\Configuration.cs" />
+    <Compile Include="Utilities\ModPresence\ModPresenceTool.cs" />
+    <Compile Include="Utilities\RW\Shaders\ShaderOptimizations.cs" />
+    <Compile Include="XansToolsMain.cs" />
+    <Compile Include="RemixCfg\RemixConfigScreen.cs" />
     <Compile Include="Utilities\Attributes\ShadowedOverrideAttribute.cs" />
     <Compile Include="Utilities\Cecil\CecilExtensions.cs" />
     <Compile Include="Utilities\General\NETExtensions.cs" />
     <Compile Include="Utilities\General\ReferenceExtensions.cs" />
     <Compile Include="Utilities\ModInit\ErrorReporter.cs" />
     <Compile Include="Utilities\RW\DamagePipeline.cs" />
+    <Compile Include="Utilities\RW\Debugging\RuntimePaletteDriver.cs" />
+    <Compile Include="Utilities\RW\FutileTools\FutileSettings.cs" />
     <Compile Include="Utilities\RW\SoundExtensions.cs" />
     <Compile Include="Utilities\RW\SoundObjects\NoDopplerRectangularDynamicSoundLoop.cs" />
     <Compile Include="Utilities\RW\WorldTools.cs" />
@@ -300,9 +315,13 @@
     <Compile Include="Utilities\General\Mathematical.cs" />
     <Compile Include="Utilities\General\Reflector.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="builtin\" />
+    <Folder Include="PrimaryToolkit\BetterConversations\" />
+  </ItemGroup>
   <PropertyGroup Label="UserMacros">
     <CL>"$(DevEnvDir)..\..\VC\Tools\MSVC\14.36.32532\bin\Hostx64\x64\cl.exe"</CL>
+    <XansToolsPluginsDir>E:\Steam Games\steamapps\common\Rain World\RainWorld_Data\StreamingAssets\mods\xanstools\plugins</XansToolsPluginsDir>
   </PropertyGroup>
   <Target Name="PreBuild" BeforeTargets="PreBuildEvent" Inputs="@(Preprocess)" Outputs="@(Preprocess->'%(Filename)_P.cs')">
     <Error Condition="Exists($(CL))" Text="Unable to find cl.exe (Searched for it at $(CL))! The version of MSVC might be wrong in this project file, or you need to install Visual C++ SDK" />
@@ -312,4 +331,8 @@
     </CreateItem>
   </Target>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>ECHO Copying XansTools.dll to game mods folder...
+COPY "$(TargetPath)" "$(XansToolsPluginsDir)"</PostBuildEvent>
+  </PropertyGroup>
 </Project>

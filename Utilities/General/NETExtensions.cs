@@ -9,7 +9,9 @@ using System.Threading.Tasks;
 namespace XansTools.Utilities.General {
 
 	/// <summary>
-	/// Extensions to .NET itself. This code is taken from my own game that I develop, and adapted to earlier versions of C#.
+	/// Extensions to .NET itself. 
+	/// <para/>
+	/// This code was taken from my own game that I develop, and adapted to earlier versions of C#. Rest assured, it is under the license of this toolkit.
 	/// </summary>
 	public static class NETExtensions {
 

@@ -15,6 +15,11 @@ using System.Threading.Tasks;
 using UnityEngine;
 
 namespace XansTools.Utilities.ModInit {
+
+	/// <summary>
+	/// This class can be used to report errors during the mod loading phase, such that a popup is displayed before the title card shows
+	/// to relay the error, which prompts the user to exit the game. Naturally, this is only suitable for fatal errors.
+	/// </summary>
 	public class ErrorReporter {
 
 		private static bool _hasErrors = false;
@@ -56,12 +61,14 @@ namespace XansTools.Utilities.ModInit {
 			IsTooLateToReport = true;
 			if (_hasErrors && !_reportedErrors) {
 				_reportedErrors = true;
-				Log.LogDebug("One or more errors were reported to XansTools during loading. Displaying...");
-				const string HEAD = "One or more errors have occurred during mods loaded with the help of XansTools! The mod(s) will be disabled the next time you run the game.\n\nA detailed log has been saved to a new folder named \"XansToolsReports\" in the Rain World directory. Please use this log to send to the appropriate mod developer(s).\n\n";
+				Log.LogDebug("One or more errors were reported to XansTools during loading. Displaying them. THIS WILL OVERRIDE ALL CODE FLOW FOR Menu.InitializationScreen - IF YOU ARE A THIRD PARTY MODDER EXPERIENCING A PROBLEM BECAUSE OF THIS, PLEASE CONTACT ME...");
+				const string HEAD = "One or more errors have occurred during mods loaded with the help of XansTools!\n\nA detailed log has been saved to a new folder named \"XansToolsReports\" in the Rain World directory. Please use this log to send to the appropriate mod developer(s).\n\n";
 				string result = HEAD;
 				foreach (ErrorReporter reporter in _reporters.Values) {
+					int i = 0;
+					string[] messages = reporter._messages.ToArray();
 					foreach (Exception err in reporter._errors) {
-						result += $"[{err.GetType().FullName}]: {err.Message}\n";
+						result += $"[{err.GetType().FullName}]: {err.Message}\n(Context: {messages[i++] ?? "No context provided."})\n";
 					}
 					CrashReporter.ReportExceptions(reporter);
 				}

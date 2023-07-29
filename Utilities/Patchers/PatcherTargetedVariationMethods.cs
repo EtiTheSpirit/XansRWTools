@@ -12,6 +12,7 @@ namespace XansTools.Utilities {
 	/// <summary>
 	/// This extension class is managed by C, and is not compiled on build (instead, look for (this file)_P.g.cs for the result)
 	/// </summary>
+	[CPreprocessorGenerated]
 	public partial class AutoPatcher {
 
 #ifdef REQUIRES_HARMONY_ARGS_PATCH

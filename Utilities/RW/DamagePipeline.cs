@@ -10,7 +10,7 @@ namespace XansTools.Utilities.RW {
 	/// <summary>
 	/// A utility class that provides access to different points in the damage pipeline of <see cref="Creature.Violence(BodyChunk, UnityEngine.Vector2?, BodyChunk, PhysicalObject.Appendage.Pos, Creature.DamageType, float, float)"/>.
 	/// </summary>
-	[Obsolete]
+	[Obsolete("This class is not yet ready and is nonfunctional.", true)]
 	public static class DamagePipeline {
 
 		internal static void Initialize() {

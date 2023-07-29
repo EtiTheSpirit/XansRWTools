@@ -2,12 +2,13 @@
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace XansTools.Utilities.Cecil {
+
+	/// <summary>
+	/// Provides extensions to <see cref="Mono.Cecil.Cil.Instruction"/> that allow matching instructions in a more mnemonic fashion (such as by name).
+	/// </summary>
 	public static class CecilExtensions {
 
 		#region Extended Matches (nongeneric)
@@ -22,6 +23,11 @@ namespace XansTools.Utilities.Cecil {
 			return instruction.MatchLdfld(out FieldReference fld) && fld.Name == fieldName;
 		}
 
+		/// <inheritdoc cref="MatchLdfld(Instruction, string)"/>
+		public static bool MatchLdfld(this Instruction instruction, string fieldName, out FieldReference fld) {
+			return instruction.MatchLdfld(out fld) && fld.Name == fieldName;
+		}
+
 		/// <summary>
 		/// Matches a <c>ldsfld</c> instruction by its field name without care for the type.
 		/// </summary>
@@ -30,6 +36,11 @@ namespace XansTools.Utilities.Cecil {
 		/// <returns></returns>
 		public static bool MatchLdsfld(this Instruction instruction, string fieldName) {
 			return instruction.MatchLdsfld(out FieldReference fld) && fld.Name == fieldName;
+		}
+
+		/// <inheritdoc cref="MatchLdsfld(Instruction, string)"/>
+		public static bool MatchLdsfld(this Instruction instruction, string fieldName, out FieldReference fld) {
+			return instruction.MatchLdsfld(out fld) && fld.Name == fieldName;
 		}
 
 		/// <summary>
@@ -42,6 +53,11 @@ namespace XansTools.Utilities.Cecil {
 			return instruction.MatchStfld(out FieldReference fld) && fld.Name == fieldName;
 		}
 
+		/// <inheritdoc cref="MatchStfld(Instruction, string)"/>
+		public static bool MatchStfld(this Instruction instruction, string fieldName, out FieldReference fld) {
+			return instruction.MatchStfld(out fld) && fld.Name == fieldName;
+		}
+
 		/// <summary>
 		/// Matches a <c>stsfld</c> instruction by its field name without care for the type.
 		/// </summary>
@@ -50,6 +66,11 @@ namespace XansTools.Utilities.Cecil {
 		/// <returns></returns>
 		public static bool MatchStsfld(this Instruction instruction, string fieldName) {
 			return instruction.MatchStsfld(out FieldReference fld) && fld.Name == fieldName;
+		}
+
+		/// <inheritdoc cref="MatchStsfld(Instruction, string)"/>
+		public static bool MatchStsfld(this Instruction instruction, string fieldName, out FieldReference fld) {
+			return instruction.MatchStsfld(out fld) && fld.Name == fieldName;
 		}
 
 		/// <summary>
@@ -62,6 +83,11 @@ namespace XansTools.Utilities.Cecil {
 			return instruction.MatchLdflda(out FieldReference fld) && fld.Name == fieldName;
 		}
 
+		/// <inheritdoc cref="MatchLdflda(Instruction, string)"/>
+		public static bool MatchLdflda(this Instruction instruction, string fieldName, out FieldReference fld) {
+			return instruction.MatchLdflda(out fld) && fld.Name == fieldName;
+		}
+
 		/// <summary>
 		/// Matches a <c>ldsflda</c> instruction by its field name without care for the type.
 		/// </summary>
@@ -70,6 +96,11 @@ namespace XansTools.Utilities.Cecil {
 		/// <returns></returns>
 		public static bool MatchLdsflda(this Instruction instruction, string fieldName) {
 			return instruction.MatchLdsflda(out FieldReference fld) && fld.Name == fieldName;
+		}
+
+		/// <inheritdoc cref="MatchLdsflda(Instruction, string)"/>
+		public static bool MatchLdsflda(this Instruction instruction, string fieldName, out FieldReference fld) {
+			return instruction.MatchLdsflda(out fld) && fld.Name == fieldName;
 		}
 
 		/// <summary>
@@ -92,22 +123,12 @@ namespace XansTools.Utilities.Cecil {
 			return instruction.MatchCallvirt(out MethodReference mtd) && mtd.Name == methodName;
 		}
 
-		/// <summary>
-		/// Matches a <c>call</c> instruction by its method name without care for the type.
-		/// </summary>
-		/// <param name="instruction"></param>
-		/// <param name="fieldName"></param>
-		/// <returns></returns>
+		/// <inheritdoc cref="MatchCall(Instruction, string)"/>
 		public static bool MatchCall(this Instruction instruction, string methodName, out MethodReference mtd) {
 			return instruction.MatchCall(out mtd) && mtd.Name == methodName;
 		}
 
-		/// <summary>
-		/// Matches a <c>callvirt</c> instruction by its method name without care for the type.
-		/// </summary>
-		/// <param name="instruction"></param>
-		/// <param name="methodName"></param>
-		/// <returns></returns>
+		/// <inheritdoc cref="MatchCallvirt(Instruction, string)"/>
 		public static bool MatchCallvirt(this Instruction instruction, string methodName, out MethodReference mtd) {
 			return instruction.MatchCallvirt(out mtd) && mtd.Name == methodName;
 		}
@@ -150,6 +171,16 @@ namespace XansTools.Utilities.Cecil {
 		/// <returns></returns>
 		public static bool MatchSetProp(this Instruction instruction, string propertyName) {
 			return instruction.MatchCallOrCallvirt($"set_{propertyName}");
+		}
+
+		/// <inheritdoc cref="MatchGetProp(Instruction, string)"/>
+		public static bool MatchGetProp(this Instruction instruction, string propertyName, out MethodReference getter) {
+			return instruction.MatchCallOrCallvirt($"get_{propertyName}", out getter);
+		}
+
+		/// <inheritdoc cref="MatchSetProp(Instruction, string)"/>
+		public static bool MatchSetProp(this Instruction instruction, string propertyName, out MethodReference setter) {
+			return instruction.MatchCallOrCallvirt($"set_{propertyName}", out setter);
 		}
 		#endregion
 
