@@ -1,4 +1,5 @@
 ﻿using BepInEx;
+using HarmonyLib;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,10 +21,13 @@ namespace XansTools {
 		private RemixConfigScreen _cfgScr;
 		private ErrorReporter _reporter;
 
+		public static Harmony Harmony { get; private set; }
+
 		private void Awake() {
 			Log.Initialize(Logger);
 			_cfgScr = RemixConfigScreen.BIE_Initialize();
 			_reporter = new ErrorReporter(this);
+			Harmony = new Harmony("Xan's Tools");
 
 			ErrorReporter.Initialize();
 			FutileSettings.Initialize();

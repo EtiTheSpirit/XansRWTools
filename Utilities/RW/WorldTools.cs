@@ -13,6 +13,19 @@ namespace XansTools.Utilities.RW {
 	public static class WorldTools {
 
 		/// <summary>
+		/// A reference to the game core object.
+		/// </summary>
+		/// <exception cref="InvalidOperationException">If Rain World is not currently in a mode describing that of the playable game.</exception>
+		public static RainWorldGame Game {
+			get {
+				if (Custom.rainWorld.processManager.currentMainLoop is RainWorldGame game) {
+					return game;
+				}
+				throw new InvalidOperationException("Rain World's current process is not the in-game process; getting the camera is not possible at this time.");
+			}
+		}
+
+		/// <summary>
 		/// Provides access to the current room that the player sees through. This is a shortcut to accessing the room property of <see cref="CurrentCamera"/>.
 		/// </summary>
 		/// <exception cref="InvalidOperationException">If Rain World is not currently in a mode describing that of the playable game.</exception>

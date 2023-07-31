@@ -13,6 +13,8 @@ namespace XansTools.Utilities.Attributes {
 	/// Indicates that a member functions as a "shadowed override". This term refers to a member that shadows that of its superclass,
 	/// but which as its IL modified such that it behaves like an override.
 	/// <para/>
+	/// This is comparable to creating a hook and not calling the original method. As such, <strong>this method is discouraged unless you know that it is acceptable.</strong>
+	/// <para/>
 	/// Shadowed overrides can <strong>not</strong> call <see langword="base"/>!
 	/// </summary>
 	[AttributeUsage(AttributeTargets.Property | AttributeTargets.Method, AllowMultiple = false, Inherited = false)]

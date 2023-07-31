@@ -8,5 +8,7 @@
 public sealed class CPreprocessorGeneratedAttribute : Attribute {
 
 	public const string NOTE = "This element was generated via the C Preprocessor.";
+
+	public CPreprocessorGeneratedAttribute(string note = null) { }
 	
 }

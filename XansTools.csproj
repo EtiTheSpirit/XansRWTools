@@ -35,6 +35,7 @@
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DEBUG_PREPROCESSOR_FLAG>/D RELEASE /D REQUIRES_HARMONY_ARGS_PATCH</DEBUG_PREPROCESSOR_FLAG>
+    <MACROHACK_NAME>MacroHack.h</MACROHACK_NAME>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="0Harmony">
@@ -285,12 +286,19 @@
     <Compile Include="AssetSystems\AssetLoader.cs" />
     <Compile Include="Exceptions\RuntimePatchFailureException.cs" />
     <Compile Include="Maths\Float2.cs" />
+    <Preprocess Include="PrimaryToolkit\CompanionData\MirrorPhysicalObject.cs" />
+    <Preprocess Include="PrimaryToolkit\CompanionData\MirrorGraphicsModule.cs" />
+    <Preprocess Include="PrimaryToolkit\CompanionData\MirrorUpdatableAndDeletable.cs" />
+    <Preprocess Include="PrimaryToolkit\CompanionData\MirrorOracle.cs" />
+    <Preprocess Include="PrimaryToolkit\CompanionData\MirrorOracleGraphics.cs" />
     <Compile Include="PrimaryToolkit\Iterator\CustomIterator.cs" />
     <Compile Include="PrimaryToolkit\Iterator\CustomIteratorGraphics.cs" />
     <Compile Include="PrimaryToolkit\Iterator\Internal\CustomIterator.ShadowHooks.cs" />
     <Compile Include="PrimaryToolkit\Iterator\Internal\CustomIteratorGraphics.ShadowHooks.cs" />
+    <Compile Include="PrimaryToolkit\Patching\Extensible.cs" />
     <Compile Include="RemixCfg\Configuration.cs" />
     <Compile Include="Utilities\ModPresence\ModPresenceTool.cs" />
+    <Compile Include="Utilities\RW\ObjectTools.cs" />
     <Compile Include="Utilities\RW\Shaders\ShaderOptimizations.cs" />
     <Compile Include="XansToolsMain.cs" />
     <Compile Include="RemixCfg\RemixConfigScreen.cs" />
@@ -314,6 +322,7 @@
     <Preprocess Include="Utilities\Patchers\PatcherTargetedVariationMethods.cs" />
     <Compile Include="Utilities\General\Mathematical.cs" />
     <Compile Include="Utilities\General\Reflector.cs" />
+	<Compile Include="$(ProjectDir)\**\*_P.g.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="builtin\" />
@@ -323,12 +332,18 @@
     <CL>"$(DevEnvDir)..\..\VC\Tools\MSVC\14.36.32532\bin\Hostx64\x64\cl.exe"</CL>
     <XansToolsPluginsDir>E:\Steam Games\steamapps\common\Rain World\RainWorld_Data\StreamingAssets\mods\xanstools\plugins</XansToolsPluginsDir>
   </PropertyGroup>
-  <Target Name="PreBuild" BeforeTargets="PreBuildEvent" Inputs="@(Preprocess)" Outputs="@(Preprocess->'%(Filename)_P.cs')">
+  <!--<Target Name="PreBuild" BeforeTargets="PreBuildEvent" Inputs="@(Preprocess)" Outputs="@(Preprocess->'%(Filename)_P.cs')">-->
+  <Target Name="PreBuild" BeforeTargets="PreBuildEvent" Inputs="@(Preprocess)" Outputs="@(Preprocess->'%(Filename)_P.g.cs')">
     <Error Condition="Exists($(CL))" Text="Unable to find cl.exe (Searched for it at $(CL))! The version of MSVC might be wrong in this project file, or you need to install Visual C++ SDK" />
     <Exec Command="$(CL) @(Preprocess) $(DEBUG_PREPROCESSOR_FLAG) /FI $(ProjectDir)DevTooling\$(MACROHACK_NAME) /C /P /Fi%(RelativeDir)%(Filename)_P.g.cs" />
+	<!--
     <CreateItem Include="@(Preprocess->'%(RelativeDir)%(Filename)_P.g.cs')">
       <Output TaskParameter="Include" ItemName="Compile" />
     </CreateItem>
+	-->
+	<ItemGroup>
+		<Compile Include="@(Preprocess->'%(RelativeDir)%(Filename)_P.g.cs')"/>
+	</ItemGroup>
   </Target>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
