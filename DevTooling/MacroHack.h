@@ -12,15 +12,13 @@
 
 // Cope, seethe, and mald simultaneously.
 
-#if !defined(ERROR_TRACK_BLOCK_START) && !defined(ERROR_TRACK_BLOCK_END)
-	#ifdef DEBUG
-		#define ERROR_TRACK_BLOCK_START try {
-		#define ERROR_TRACK_BLOCK_END } catch (Exception ____err) { Log.LogError(____err); throw; }
-	#else
-		#define ERROR_TRACK_BLOCK_START {
-		#define ERROR_TRACK_BLOCK_END }
-	#endif
-#endif
+// Actually, joking aside, for any new modders looking to write code, please for the love of god do not do what I did here.
+// This .h file was the result of being so unfathomably disgruntled at so many little things, and spending so much time in C
+// and HLSL that I am used to them.
+// 
+// Perhaps a relevant description:
+// You know how in RW, an iterator crossing itself out is a taboo?
+// This is like that. Like it's bad. *Bad* bad.
 
 #if defined(REQUIRES_HARMONY_ARGS_PATCH) && !defined(DECLARED_HARMONY_ARGS_PATCH)
 	#define DECLARED_HARMONY_ARGS_PATCH
@@ -135,7 +133,6 @@
 #define __PROPERTY_MIRROR_HACKS__
 
 // #define CREATE_BYREFS
-
 
 #define SINGLE_ARG(...) __VA_ARGS__
 #define GET_PROPERTY(propCtr, type, propName)		\
