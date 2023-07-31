@@ -322,7 +322,12 @@
     <Preprocess Include="Utilities\Patchers\PatcherTargetedVariationMethods.cs" />
     <Compile Include="Utilities\General\Mathematical.cs" />
     <Compile Include="Utilities\General\Reflector.cs" />
-	<Compile Include="$(ProjectDir)\**\*_P.g.cs" />
+    <Compile Include="F:\Users\Xan\source\repos\RWFirstMod\XansTools\DevTooling\MacroHack_P.g.cs" />
+    <Compile Include="F:\Users\Xan\source\repos\RWFirstMod\XansTools\PrimaryToolkit\CompanionData\MirrorGraphicsModule_P.g.cs" />
+    <Compile Include="F:\Users\Xan\source\repos\RWFirstMod\XansTools\PrimaryToolkit\CompanionData\MirrorOracleGraphics_P.g.cs" />
+    <Compile Include="F:\Users\Xan\source\repos\RWFirstMod\XansTools\PrimaryToolkit\CompanionData\MirrorOracle_P.g.cs" />
+    <Compile Include="F:\Users\Xan\source\repos\RWFirstMod\XansTools\PrimaryToolkit\CompanionData\MirrorPhysicalObject_P.g.cs" />
+    <Compile Include="F:\Users\Xan\source\repos\RWFirstMod\XansTools\PrimaryToolkit\CompanionData\MirrorUpdatableAndDeletable_P.g.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="builtin\" />
@@ -336,14 +341,14 @@
   <Target Name="PreBuild" BeforeTargets="PreBuildEvent" Inputs="@(Preprocess)" Outputs="@(Preprocess->'%(Filename)_P.g.cs')">
     <Error Condition="Exists($(CL))" Text="Unable to find cl.exe (Searched for it at $(CL))! The version of MSVC might be wrong in this project file, or you need to install Visual C++ SDK" />
     <Exec Command="$(CL) @(Preprocess) $(DEBUG_PREPROCESSOR_FLAG) /FI $(ProjectDir)DevTooling\$(MACROHACK_NAME) /C /P /Fi%(RelativeDir)%(Filename)_P.g.cs" />
-	<!--
+    <!--
     <CreateItem Include="@(Preprocess->'%(RelativeDir)%(Filename)_P.g.cs')">
       <Output TaskParameter="Include" ItemName="Compile" />
     </CreateItem>
 	-->
-	<ItemGroup>
-		<Compile Include="@(Preprocess->'%(RelativeDir)%(Filename)_P.g.cs')"/>
-	</ItemGroup>
+    <ItemGroup>
+      <Compile Include="@(Preprocess->'%(RelativeDir)%(Filename)_P.g.cs')" />
+    </ItemGroup>
   </Target>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
