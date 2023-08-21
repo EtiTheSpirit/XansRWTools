@@ -407,6 +407,5 @@ namespace XansTools.Utilities.General {
 			prop.SetValue(instance, value.ReflectiveCastInto(prop.PropertyType));
 		}
 
-
 	}
 }

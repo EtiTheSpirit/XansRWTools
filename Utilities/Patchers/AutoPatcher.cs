@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using MonoMod.RuntimeDetour;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,7 +29,7 @@ namespace XansTools.Utilities {
 		/// </summary>
 		private static readonly Dictionary<Type, Dictionary<MethodBase, MethodBase>> _originalsToOverridesByAssembly = new Dictionary<Type, Dictionary<MethodBase, MethodBase>>();
 
-		
+
 		#region Caches to Methods
 
 #if !REQUIRES_HARMONY_ARGS_PATCH
@@ -78,11 +79,11 @@ namespace XansTools.Utilities {
 		// Code is generated externally for these below. For the generated code, see Utilities/Patchers/PatcherTargetedVariationMethods.cs
 		partial void AdditionalInitializeTask();
 		partial void WrapInRedirector(MethodInfo methodInfo, ref HarmonyMethod mtd); // lmfao
-		// To future people: This odd ref trick is used because C# 7.3 does not support extended partial methods.
-		// Having a non-void return type (or out parameters) requires accessibility modifiers to be applied.
-		// ...which requires extended partial methods
-		// So I had to cheese the shit out of this system with an oddball ref parameter.
-		// Thankfully, out is literally just ref but with compile-time enforcement to make sure you set the value.
+																					 // To future people: This odd ref trick is used because C# 7.3 does not support extended partial methods.
+																					 // Having a non-void return type (or out parameters) requires accessibility modifiers to be applied.
+																					 // ...which requires extended partial methods
+																					 // So I had to cheese the shit out of this system with an oddball ref parameter.
+																					 // Thankfully, out is literally just ref but with compile-time enforcement to make sure you set the value.
 
 		private HarmonyMethod WrapInRedirector(MethodInfo methodInfo) {
 			HarmonyMethod retn = null;
@@ -99,6 +100,7 @@ namespace XansTools.Utilities {
 			storage[original] = @override;
 		}
 
+		[Obsolete("Do not initialize any more.", true)]
 		public void Initialize(Harmony harmony) {
 			_harmony = harmony;
 #if REQUIRES_HARMONY_ARGS_PATCH
@@ -157,6 +159,7 @@ namespace XansTools.Utilities {
 		/// <param name="set"></param>
 		/// <exception cref="MissingMemberException"></exception>
 		/// <exception cref="MethodSignatureMismatchException"></exception>
+		[Obsolete("Use the version that accepts MethodInfo", true)]
 		public void InjectIntoProperty<TDeclaringType>(string name, HarmonyMethod get = null, HarmonyMethod set = null) {
 			PropertyInfo declared = typeof(TDeclaringType).GetProperty(name, COMMON_FLAGS);
 			if (declared == null) throw new MissingMemberException($"No such property \"{name}\" of type {typeof(TDeclaringType).FullName}");
@@ -181,6 +184,43 @@ namespace XansTools.Utilities {
 		}
 
 		/// <summary>
+		/// Hooks a getter and/or setter into a property with the provided name. Returns the hooks (get, set), which may be null depending on which of <paramref name="newGet"/> and <paramref name="newSet"/> were provided.
+		/// </summary>
+		/// <typeparam name="TDeclaringType"></typeparam>
+		/// <param name="name"></param>
+		/// <param name="newGet"></param>
+		/// <param name="newSet"></param>
+		/// <returns></returns>
+		/// <exception cref="MissingMemberException"></exception>
+		/// <exception cref="ArgumentNullException"></exception>
+		/// <exception cref="MethodSignatureMismatchException"></exception>
+		public (Hook, Hook) InjectIntoProperty<TDeclaringType>(string name, MethodInfo newGet = null, MethodInfo newSet = null) {
+			PropertyInfo declared = typeof(TDeclaringType).GetProperty(name, COMMON_FLAGS);
+			if (declared == null) throw new MissingMemberException($"No such property \"{name}\" of type {typeof(TDeclaringType).FullName}");
+			if (newGet == null && newSet == null) throw new ArgumentNullException($"{nameof(newGet)}, {nameof(newSet)}", "Either one of get or set must be passed in. Both cannot be null.");
+			bool declaredHasGet = declared.GetMethod != null;
+			bool declaredHasSet = declared.SetMethod != null;
+			bool replacementGetPresent = newGet != null;
+			bool replacementSetPresent = newSet != null;
+			if (!declaredHasGet && replacementGetPresent) throw new MethodSignatureMismatchException($"Property \"{name}\" (member of type {typeof(TDeclaringType).FullName}) does not have a get method. An override or injection to the getter is not possible.");
+			if (!declaredHasSet && replacementSetPresent) throw new MethodSignatureMismatchException($"Property \"{name}\" (member of type {typeof(TDeclaringType).FullName}) does not have a set method. An override or injection to the setter is not possible.");
+
+			Hook get = null;
+			Hook set = null;
+			if (declaredHasGet && replacementGetPresent) {
+				MethodInfo declaredGet = declared.GetMethod;
+				get = new Hook(declaredGet, newGet);
+				Log.LogTrace($"Patched {name}.get of {typeof(TDeclaringType).FullName}.");
+			}
+			if (declaredHasSet && replacementSetPresent) {
+				MethodInfo declaredSet = declared.SetMethod;
+				set = new Hook(declaredSet, newSet);
+				Log.LogTrace($"Patched {name}.get of {typeof(TDeclaringType).FullName}.");
+			}
+			return (get, set);
+		}
+
+		/// <summary>
 		/// <strong>This technique is destructive and should only be used when FULL CONTROL of the target property is UNQUESTIONABLY REQUIRED.</strong>
 		/// <para/>
 		/// Given the declaring type and the inheriting type, this will apply a Harmony patch that causes references to
@@ -190,7 +230,7 @@ namespace XansTools.Utilities {
 		/// <typeparam name="TDeclaringType">The type that declares this property or seals it.</typeparam>
 		/// <typeparam name="TInheritingType">The type that must shadow (but wants to override) this property.</typeparam>
 		/// <param name="name"></param>
-		[Obsolete("Decorate with ShadowedOverrideAttribute instead of calling this.")]
+		[Obsolete("Decorate with ShadowedOverrideAttribute instead of calling this.", true)]
 		public void TurnShadowedPropertyIntoOverride<TDeclaringType, TInheritingType>(string name) where TInheritingType : TDeclaringType {
 			PropertyInfo declared = typeof(TDeclaringType).GetProperty(name, COMMON_FLAGS);
 			PropertyInfo inherited = typeof(TInheritingType).GetProperty(name, COMMON_FLAGS);
@@ -232,7 +272,7 @@ namespace XansTools.Utilities {
 		/// <typeparam name="TDeclaringType">The type that declares this property or seals it.</typeparam>
 		/// <typeparam name="TInheritingType">The type that must shadow (but wants to override) this property.</typeparam>
 		/// <param name="name"></param>
-		[Obsolete("Decorate with ShadowedOverrideAttribute instead of calling this.")]
+		[Obsolete("Decorate with ShadowedOverrideAttribute instead of calling this.", true)]
 		public void TurnShadowedMethodIntoOverride<TDeclaringType, TInheritingType>(string name) where TInheritingType : TDeclaringType {
 			MethodInfo declared = typeof(TDeclaringType).GetMethod(name, COMMON_FLAGS);
 			MethodInfo inherited = typeof(TInheritingType).GetMethod(name, COMMON_FLAGS);

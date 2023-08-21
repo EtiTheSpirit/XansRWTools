@@ -7,19 +7,6 @@
 
 // This is a prank. You are being pranked.
 
-// This is a hilariously terrible hack that allows me to use C macros in C#
-// Yes, it's terrible, and no, I don't care (that's why I did it anyway).
-
-// Cope, seethe, and mald simultaneously.
-
-// Actually, joking aside, for any new modders looking to write code, please for the love of god do not do what I did here.
-// This .h file was the result of being so unfathomably disgruntled at so many little things, and spending so much time in C
-// and HLSL that I am used to them.
-// 
-// Perhaps a relevant description:
-// You know how in RW, an iterator crossing itself out is a taboo?
-// This is like that. Like it's bad. *Bad* bad.
-
 #if defined(REQUIRES_HARMONY_ARGS_PATCH) && !defined(DECLARED_HARMONY_ARGS_PATCH)
 	#define DECLARED_HARMONY_ARGS_PATCH
 	
@@ -133,15 +120,16 @@
 #define __PROPERTY_MIRROR_HACKS__
 
 // #define CREATE_BYREFS
+#define PUBLIC public
 
 #define SINGLE_ARG(...) __VA_ARGS__
 #define GET_PROPERTY(propCtr, type, propName)		\
 [CPreprocessorGenerated]							\
-public type propName => propCtr.propName;
+PUBLIC type propName => propCtr.propName;
 
 #define MIRROR_PROPERTY(propCtr, type, propName)	\
 [CPreprocessorGenerated]							\
-public type propName {								\
+PUBLIC type propName {								\
 	get => propCtr.propName;						\
 	set => propCtr.propName = value;				\
 }
@@ -149,18 +137,18 @@ public type propName {								\
 #ifdef CREATE_BYREFS
 #define REF_GET_PROPERTY(propCtr, type, propName)	\
 [CPreprocessorGenerated]							\
-public type propName => propCtr.propName;			\
+PUBLIC type propName => propCtr.propName;			\
 [CPreprocessorGenerated]							\
-public ref type BYREF_##propName => ref propCtr.propName;
+PUBLIC ref type BYREF_##propName => ref propCtr.propName;
 
 #define REF_MIRROR_PROPERTY(propCtr, type, propName)	\
 [CPreprocessorGenerated]								\
-public type propName {									\
+PUBLIC type propName {									\
 	get => propCtr.propName;							\
 	set => propCtr.propName = value;					\
 }														\
 [CPreprocessorGenerated]								\
-public ref type BYREF_##propName => ref propCtr.propName;
+PUBLIC ref type BYREF_##propName => ref propCtr.propName;
 #else
 #define REF_GET_PROPERTY(propCtr, type, propName) GET_PROPERTY(propCtr, type, propName)
 #define REF_MIRROR_PROPERTY(propCtr, type, propName) MIRROR_PROPERTY(propCtr, type, propName)

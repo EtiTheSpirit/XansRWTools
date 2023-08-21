@@ -19,5 +19,23 @@ namespace XansTools.Utilities.RW {
 			return Vector2.Lerp(first.lastPos, first.pos, timeStacker);
 		}
 
+		// TODO: Is this useful?
+		/// <summary>
+		/// Looks at the object responsible for a given <see cref="BodyChunk"/> and attempts to cast it into an instance of <typeparamref name="T"/>.
+		/// This behaves much like the <see langword="is"/> keyword in that it returns a boolean and spits out the resulting type.
+		/// </summary>
+		/// <typeparam name="T">The type of object to cast into.</typeparam>
+		/// <param name="chunk">The chunk belonging to the desired object.</param>
+		/// <param name="result">The owner of the chunk as <typeparamref name="T"/>, or <see langword="default"/> if the type does not match.</param>
+		/// <returns>True if the owner of the provided <see cref="BodyChunk"/> is an instance of <typeparamref name="T"/>, false if not.</returns>
+		public static bool TryGetOwnerAs<T>(this BodyChunk chunk, out T result) where T : PhysicalObject {
+			if (chunk.owner is T instance) {
+				result = instance;
+				return true;
+			}
+			result = default;
+			return false;
+		}
+
 	}
 }

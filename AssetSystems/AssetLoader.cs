@@ -1,15 +1,16 @@
-﻿using RWCustom;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Rendering;
 
 namespace XansTools.AssetSystems {
+
+	/// <summary>
+	/// This class manages loading assets from an embedded resource.
+	/// </summary>
 	public static class AssetLoader {
 
 		/// <summary>
@@ -26,16 +27,30 @@ namespace XansTools.AssetSystems {
 		/// Given the name of a file marked as "Embedded Resource" in the VS solution, this will load it as a unity <see cref="AssetBundle"/>.
 		/// </summary>
 		/// <param name="fullyQualifiedPath">The path to the resource. This begins with your namespace, then includes any folders down to the path of your asset. Example: <c>XansCharacter.assets.embedded.shaders</c></param>
-		/// <param name="skipCache">If true, the internal cache used to quickly return existing bundles will be skipped, and the cache will be updated with the latest result from the call.</param>
+		/// <param name="skipCache">If true, the internal cache used to quickly return existing bundles will be skipped, and the cache will be updated with the latest result from the call. There is basically no reason to do this unless you are somehow updating manifest resources on the fly.</param>
 		/// <returns></returns>
 		public static AssetBundle LoadAssetBundleFromEmbeddedResource(string fullyQualifiedPath, bool skipCache = false) {
+			return LoadAssetBundleFromEmbeddedResource(Assembly.GetCallingAssembly(), fullyQualifiedPath, skipCache);
+		}
+
+		/// <summary>
+		/// Given the name of a file marked as "Embedded Resource" in the VS solution, this will load it as a unity <see cref="AssetBundle"/>.
+		/// </summary>
+		/// <param name="yourAssembly">Your assembly. You can get this via <see cref="Assembly.GetExecutingAssembly()"/>.</param>
+		/// <param name="fullyQualifiedPath">The path to the resource. This begins with your namespace, then includes any folders down to the path of your asset. Example: <c>XansCharacter.assets.embedded.shaders</c></param>
+		/// <param name="skipCache">If true, the internal cache used to quickly return existing bundles will be skipped, and the cache will be updated with the latest result from the call. There is basically no reason to do this unless you are somehow updating manifest resources on the fly.</param>
+		/// <returns></returns>
+		public static AssetBundle LoadAssetBundleFromEmbeddedResource(Assembly yourAssembly, string fullyQualifiedPath, bool skipCache = false) {
 			Log.LogMessage($"Loading embedded asset bundle: {fullyQualifiedPath}");
 			if (_bundlesByName.TryGetValue(fullyQualifiedPath, out AssetBundle bundle) && !skipCache) {
 				Log.LogWarning($"Something attempted to call {nameof(LoadAssetBundleFromEmbeddedResource)} on a bundle that has already been loaded! Please store the loaded bundle into a variable instead of calling this method multiple times.");
 				return bundle;
 			}
 			using (MemoryStream mstr = new MemoryStream()) {
-				Stream str = Assembly.GetCallingAssembly().GetManifestResourceStream(fullyQualifiedPath);
+				Stream str = yourAssembly.GetManifestResourceStream(fullyQualifiedPath);
+				if (str == null) {
+					throw new InvalidOperationException($"Attempted to load resource \"{fullyQualifiedPath}\" from [{yourAssembly}] but no such resource exists!");
+				}
 				str.CopyTo(mstr);
 				str.Flush();
 				str.Close();
@@ -43,11 +58,11 @@ namespace XansTools.AssetSystems {
 				bundle = AssetBundle.LoadFromMemory(mstr.ToArray());
 				Log.LogTrace("Unity has successfully loaded this asset bundle from memory.");
 				_bundlesByName[fullyQualifiedPath] = bundle;
-				
+
 				Log.LogTrace("Populating fast-access data (Unity Shaders => FShaders)...");
 				Dictionary<string, FShader> bindings = LoadAllShadersAsFShader(bundle);
 				_knownShaders[bundle] = bindings;
-				
+
 				// TODO: Other asset types?
 				Log.LogTrace("Done. Bundle is ready for use.");
 				return bundle;
@@ -63,12 +78,13 @@ namespace XansTools.AssetSystems {
 		/// called once for any given shader.
 		/// </remarks>
 		/// <param name="bundle">The bundle that was loaded.</param>
-		/// <param name="shaderFullName">The name name of the shader as declared by its ShaderLab code (at the very top, where you put <c>Shader "path/to/myshader" { ...</c></param>
+		/// <param name="shaderFullName">The full name of the shader, as declared by its source code (on line 1, <c>Shader "This/Text/Here" { ...</c>)</param>
 		/// <returns></returns>
 		/// <exception cref="KeyNotFoundException">If no such shader exists with the provided name.</exception>
 		public static FShader FindFShader(this AssetBundle bundle, string shaderFullName) {
 			if (_knownShaders.TryGetValue(bundle, out Dictionary<string, FShader> lookup)) {
 				if (lookup.TryGetValue(shaderFullName, out FShader shader)) {
+					Log.LogWarning($"A duplicate call to {nameof(FindFShader)} (with query \"{shaderFullName}\") was detected. Please consider storing the result of this method, and referencing your stored result.");
 					return shader;
 				}
 				throw new KeyNotFoundException($"Attempted to load a shader with the query \"{shaderFullName}\", but no such shader exists!");
@@ -83,10 +99,10 @@ namespace XansTools.AssetSystems {
 
 		/// <summary>
 		/// This operates the same as <see cref="FindFShader(AssetBundle, string)"/> but assists with debugging by reporting unexpected quirks
-		/// with the shader code.
+		/// with the shader code. You should use this when debugging your code.
 		/// </summary>
-		/// <param name="bundle"></param>
-		/// <param name="shaderFullName"></param>
+		/// <param name="bundle">The <see cref="AssetBundle"/> that contains the shader.</param>
+		/// <param name="shaderFullName">The full name of the shader, as declared by its source code (on line 1, <c>Shader "This/Text/Here" { ...</c>)</param>
 		/// <returns></returns>
 		/// <exception cref="KeyNotFoundException">If no such shader exists with the provided name.</exception>
 		public static FShader FindFShaderWithSanityCheck(this AssetBundle bundle, string shaderFullName) {

@@ -18,6 +18,7 @@ namespace XansTools.Utilities.Attributes {
 	/// Shadowed overrides can <strong>not</strong> call <see langword="base"/>!
 	/// </summary>
 	[AttributeUsage(AttributeTargets.Property | AttributeTargets.Method, AllowMultiple = false, Inherited = false)]
+	[Obsolete("This technique is outdated. Use the Extensibles library, which bypasses all pitfalls of this technique.", true)]
 	public class ShadowedOverrideAttribute : Attribute {
 		private const BindingFlags COMMON_FLAGS = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
 
