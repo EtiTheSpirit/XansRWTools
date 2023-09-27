@@ -1,4 +1,5 @@
-﻿using MonoMod.Cil;
+﻿#pragma warning disable CS0067
+using MonoMod.Cil;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,7 +20,7 @@ namespace XansTools.Utilities.RW {
 		}
 
 		private static void InjectViolence(ILContext il) {
-			ILCursor cursor = new ILCursor(il);
+			//ILCursor cursor = new ILCursor(il);
 
 		}
 
