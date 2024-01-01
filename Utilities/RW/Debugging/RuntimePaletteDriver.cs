@@ -13,7 +13,7 @@ using XansTools.RemixCfg;
 using XansTools.Utilities.Cecil;
 
 namespace XansTools.Utilities.RW.Debugging {
-	public static class RuntimePaletteDriver {
+	internal static class RuntimePaletteDriver {
 
 		private static bool _hasUpdatedData = false;
 
@@ -61,7 +61,7 @@ namespace XansTools.Utilities.RW.Debugging {
 		/// <summary>
 		/// Forcefully reloads the palettes in the current room from disk.
 		/// </summary>
-		public static void ReloadAllPalettes() {
+		internal static void ReloadAllPalettes() {
 			RoomCamera camera = WorldTools.CurrentCamera;
 			if (camera.room == null) {
 				Log.LogWarning("Cannot reload palettes for the current camera! Reason: Realized room is null.");
@@ -143,7 +143,7 @@ namespace XansTools.Utilities.RW.Debugging {
 		/// </summary>
 		/// <param name="palette"></param>
 		/// <returns></returns>
-		public static string GetPaletteUsedByGame(int palette) {
+		internal static string GetPaletteUsedByGame(int palette) {
 			if (palette < 80) {
 				Log.LogTrace("Skipping vanilla/MSC or invalid palette.");
 				return null;

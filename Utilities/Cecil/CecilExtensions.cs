@@ -310,6 +310,15 @@ namespace XansTools.Utilities.Cecil {
 		#endregion
 
 		#region Utility Replacements
+
+		public static void DumpToLog(this ILCursor cursor, Action<string> log, int startOffset = -5, int numInstructions = 10) {
+			cursor.Index += startOffset;
+			for (int i = 0; i < numInstructions; i++) {
+				log(cursor.Instrs[cursor.Index].ToStringFixed());
+				cursor.Index++;
+			}
+		}
+
 		/// <summary>
 		/// A version of <see cref="Instruction.ToString"/> that doesn't shit the bed when it encounters a br* instruction.
 		/// </summary>

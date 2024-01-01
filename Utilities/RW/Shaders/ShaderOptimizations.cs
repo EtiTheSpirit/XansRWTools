@@ -10,7 +10,7 @@ namespace XansTools.Utilities.RW.Shaders {
 	/// <summary>
 	/// Provides optimizations to shaders by turning a lot of values into keywords for static branching.
 	/// </summary>
-	public static class ShaderOptimizations {
+	internal static class ShaderOptimizations {
 
 		private static readonly PropertyBoundKeywordToggler _rimFix = new PropertyBoundKeywordToggler("RIMFIX_ON", "_rimFix", 0.5f);
 		private static readonly PropertyBoundKeywordToggler _grime = new PropertyBoundKeywordToggler("GRIME_ON", "_Grime");
@@ -32,7 +32,7 @@ namespace XansTools.Utilities.RW.Shaders {
 
 		private class KeywordToggler {
 
-			public virtual bool DesiredState {
+			public virtual bool Enabled {
 				get => _desiredState;
 				set {
 					if (_desiredState != value) {
@@ -71,9 +71,9 @@ namespace XansTools.Utilities.RW.Shaders {
 
 			public void Update() {
 				if (whenGreater) {
-					DesiredState = Shader.GetGlobalFloat(property) > threshold;
+					Enabled = Shader.GetGlobalFloat(property) > threshold;
 				} else {
-					DesiredState = Shader.GetGlobalFloat(property) < threshold;
+					Enabled = Shader.GetGlobalFloat(property) < threshold;
 				}
 			}
 		}

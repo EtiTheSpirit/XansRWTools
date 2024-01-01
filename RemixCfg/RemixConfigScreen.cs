@@ -126,7 +126,7 @@ namespace XansTools.RemixCfg {
 								bumpBehav = box.bumpBehav,
 								description = box.description
 							};
-							optionDesc = new OpLabel(RelativeOffset(0.025f, 0, 30f, height + descLineOffset), new Vector2(440f, descLineHeight), description, FLabelAlignment.Left, false, textParams) {
+							optionDesc = new OpLabel(RelativeOffset(0.025f, 0, 40f, height + descLineOffset), new Vector2(440f, descLineHeight), description, FLabelAlignment.Left, false, textParams) {
 								bumpBehav = box.bumpBehav,
 								description = box.description
 							};
@@ -143,7 +143,7 @@ namespace XansTools.RemixCfg {
 								bumpBehav = upDown.bumpBehav,
 								description = upDown.description
 							};
-							optionDesc = new OpLabel(RelativeOffset(0.025f, 0, 30f, height + descLineOffset), new Vector2(440f, descLineHeight), description, FLabelAlignment.Left, false, textParams) {
+							optionDesc = new OpLabel(RelativeOffset(0.025f, 0, 40f, height + descLineOffset), new Vector2(440f, descLineHeight), description, FLabelAlignment.Left, false, textParams) {
 								bumpBehav = upDown.bumpBehav,
 								description = upDown.description
 							};
@@ -160,7 +160,7 @@ namespace XansTools.RemixCfg {
 								bumpBehav = upDown.bumpBehav,
 								description = upDown.description
 							};
-							optionDesc = new OpLabel(RelativeOffset(0.025f, 0, 30f, height + descLineOffset), new Vector2(440f, descLineHeight), description, FLabelAlignment.Left, false, textParams) {
+							optionDesc = new OpLabel(RelativeOffset(0.025f, 0, 40f, height + descLineOffset), new Vector2(440f, descLineHeight), description, FLabelAlignment.Left, false, textParams) {
 								bumpBehav = upDown.bumpBehav,
 								description = upDown.description
 							};

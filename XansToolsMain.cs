@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using XansTools.RemixCfg;
 using XansTools.Utilities.ModInit;
+using XansTools.Utilities.RW.DataPersistence;
 using XansTools.Utilities.RW.Debugging;
 using XansTools.Utilities.RW.FutileTools;
 using XansTools.Utilities.RW.Shaders;
@@ -19,20 +20,22 @@ namespace XansTools {
 		public const string PLUGIN_ID = "xanstools";
 		public const string PLUGIN_VERSION = "1.0.0";
 		private RemixConfigScreen _cfgScr;
-		private ErrorReporter _reporter;
+
+		internal static ErrorReporter Reporter { get; private set; }
 
 		public static Harmony Harmony { get; private set; }
 
 		private void Awake() {
 			Log.Initialize(Logger);
 			_cfgScr = RemixConfigScreen.BIE_Initialize();
-			_reporter = new ErrorReporter(this);
-			Harmony = new Harmony("Xan's Tools");
+			Reporter = new ErrorReporter(this);
+			Harmony = new Harmony(PLUGIN_NAME);
 
 			ErrorReporter.Initialize();
 			FutileSettings.Initialize();
 			RuntimePaletteDriver.Initialize();
 			ShaderOptimizations.Initialize();
+			SaveDataAccessor.Initialize();
 
 			On.RainWorld.OnModsInit += OnModsInitializing;
 
@@ -45,7 +48,7 @@ namespace XansTools {
 				MachineConnector.SetRegisteredOI(PLUGIN_ID, _cfgScr);
 			} catch (Exception exc) {
 				Log.LogFatal(exc);
-				_reporter.DeferredReportModInitError(exc, $"Registering the Remix config menu to {PLUGIN_NAME}");
+				Reporter.DeferredReportModInitError(exc, $"Registering the Remix config menu to {PLUGIN_NAME}");
 				throw;
 			}
 		}

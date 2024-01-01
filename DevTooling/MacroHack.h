@@ -6,6 +6,7 @@
 // LMFAO ^^
 
 // This is a prank. You are being pranked.
+// It's not real. It was a ruse, a trick.
 
 #if defined(REQUIRES_HARMONY_ARGS_PATCH) && !defined(DECLARED_HARMONY_ARGS_PATCH)
 	#define DECLARED_HARMONY_ARGS_PATCH

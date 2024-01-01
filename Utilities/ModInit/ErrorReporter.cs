@@ -62,7 +62,7 @@ namespace XansTools.Utilities.ModInit {
 			if (_hasErrors && !_reportedErrors) {
 				_reportedErrors = true;
 				Log.LogDebug("One or more errors were reported to XansTools during loading. Displaying them. THIS WILL OVERRIDE ALL CODE FLOW FOR Menu.InitializationScreen - IF YOU ARE A THIRD PARTY MODDER EXPERIENCING A PROBLEM BECAUSE OF THIS, PLEASE CONTACT ME...");
-				const string HEAD = "One or more errors have occurred during mods loaded with the help of XansTools!\n\nA detailed log has been saved to a new folder named \"XansToolsReports\" in the Rain World directory. Please use this log to send to the appropriate mod developer(s).\n\n";
+				const string HEAD = "A mod has fatally errored during the loading phase.\n\nA detailed log has been saved to a new folder named \"XansToolsReports\" in the Rain World directory. Please use this log to send to the appropriate mod developer(s).\n\n";
 				string result = HEAD;
 				foreach (ErrorReporter reporter in _reporters.Values) {
 					int i = 0;

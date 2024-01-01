@@ -2,7 +2,7 @@
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
-    <LangVersion>11.0</LangVersion>
+    <LangVersion>9.0</LangVersion>
   </PropertyGroup>
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -290,7 +290,13 @@
     <Compile Include="Exceptions\RuntimePatchFailureException.cs" />
     <Compile Include="Maths\Matrix3x2.cs" />
     <Compile Include="RemixCfg\Configuration.cs" />
+    <Compile Include="Utilities\RW\AccessorTools.cs" />
     <Compile Include="Utilities\ModPresence\ModPresenceTool.cs" />
+    <Compile Include="Utilities\Patchers\MethodOfProvider.cs" />
+    <Compile Include="Utilities\RW\DataPersistence\ISaveable.cs" />
+    <Compile Include="Utilities\RW\DataPersistence\SaveDataAccessor.cs" />
+    <Compile Include="Utilities\RW\DataPersistence\SaveScope.cs" />
+    <Compile Include="Utilities\RW\DataPersistence\XTSaveData.cs" />
     <Compile Include="Utilities\RW\ObjectTools.cs" />
     <Compile Include="Utilities\RW\Shaders\ShaderOptimizations.cs" />
     <Compile Include="XansToolsMain.cs" />

@@ -63,6 +63,19 @@ namespace XansTools.Utilities.RW {
 		}
 
 		/// <summary>
+		/// Returns all players.
+		/// </summary>
+		/// <returns></returns>
+		/// <exception cref="IndexOutOfRangeException"></exception>
+		/// <exception cref="InvalidOperationException"></exception>
+		public static Player[] GetPlayers() {
+			if (Custom.rainWorld.processManager.currentMainLoop is RainWorldGame game) {
+				return game.Players.Where(ac => ac.realizedCreature is Player).Select(ac => (Player)ac.realizedCreature).ToArray();
+			}
+			throw new InvalidOperationException("Rain World's current process is not the in-game process; getting a player is not possible at this time.");
+		}
+
+		/// <summary>
 		/// Allows accessing cameras for other players by their index. This may not be accurate, depending on how multiplayer is used.
 		/// </summary>
 		/// <param name="playerNumber">The index of the player. Must be greater than or equal to 0.</param>

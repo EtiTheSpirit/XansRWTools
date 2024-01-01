@@ -207,6 +207,16 @@ namespace XansTools.Utilities.General {
 		public static bool IsDefault<T>(this T value) => EqualityComparer<T>.Default.Equals(value, default);
 
 		/// <summary>
+		/// A shorthand alias for getting a method. This uses binding flags for public, private, static, and instance all together.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="name"></param>
+		/// <returns></returns>
+		public static MethodInfo QuickGetMethod<T>(string name) {
+			return typeof(T).GetMethod(name, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance);
+		}
+
+		/// <summary>
 		/// Exposes the HasBeenThrown property of <see cref="Exception"/>.
 		/// </summary>
 		/// <param name="source"></param>
